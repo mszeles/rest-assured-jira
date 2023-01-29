@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 public class ProjectTest {
 
-    private static Properties config = new Properties();
+    private static final Properties config = new Properties();
 
     @BeforeClass
     public void beforeClass() throws IOException {
@@ -26,8 +26,12 @@ public class ProjectTest {
     }
 
     @Test
-    public void getProjectReturnsProjects() {
-        given().when().get("/project").then().assertThat().statusCode(200);
+    public void getAllProjects() {
+        given().log().uri().queryParam("expand", "description").when().get("/project").then().log().body().assertThat().statusCode(200);
     }
 
+    @Test
+    public void getProjectByKey() {
+        given().log().uri().pathParam("projectKey", "RAPP").when().get("/project/{projectKey}").then().log().body().assertThat().statusCode(200);
+    }
 }
