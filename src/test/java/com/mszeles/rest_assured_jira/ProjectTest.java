@@ -103,4 +103,48 @@ public class ProjectTest {
                 .then().header("Content-Type", anyOf(containsString("application/json"), containsString("application/xml")));
     }
 
+    @Test
+    public void assertionsOnBody() {
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("name", equalTo("REST Assured Practice Project"));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("avatarUrls.48x48", startsWith(config.getProperty("jiraURI")));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("issueTypes[0].name", equalTo("Task"));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("issueTypes.size()", equalTo(3));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("issueTypes[0].avatarId", greaterThan(10000));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("issueTypes.name", hasItem("Epic"));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("issueTypes.name", hasItems("Epic", "Task", "Subtask"));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("roles", hasKey("Administrator"));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("issueTypes[2]", hasValue("Subtask"));
+
+        given().pathParam("projectKey", PROJECT_KEY)
+                .when().get("/project/{projectKey}")
+                .then().body("", hasEntry("projectTypeKey", "software"));
+
+    }
+
 }
